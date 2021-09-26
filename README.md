@@ -72,3 +72,6 @@ Define a porta utilizada para escutar mensagens de broadcast do servidor: -callb
 # Exemplo de execução:
 dotnet run -- -protocol=tcp -server=127.0.0.1 -callbackPort=8005
 ```
+
+## Parametros para utilização do bate papo
+Serão impressas após o registro do usuário
