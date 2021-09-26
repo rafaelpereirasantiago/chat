@@ -41,13 +41,13 @@ $ dotnet run -- -protocol=websocket -callbackPort=8007
 # Entre no diretório "ClientTests"
 $ cd ClientTests
 
-# Execut os testes do cliente
+# Execute os testes do cliente
 $ dotnet test
 
 # Entre no diretório "ServerTests"
 $ cd ServerTests
 
-# Execut os testes do servidor
+# Execute os testes do servidor
 $ dotnet test
 ```
 
@@ -73,5 +73,5 @@ Define a porta utilizada para escutar mensagens de broadcast do servidor: -callb
 dotnet run -- -protocol=tcp -server=127.0.0.1 -callbackPort=8005
 ```
 
-## Parametros para utilização do bate papo
+## Comandos para utilização do bate papo
 Serão impressas após o registro do usuário
