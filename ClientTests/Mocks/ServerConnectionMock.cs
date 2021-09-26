@@ -7,7 +7,10 @@ namespace ClientTests.Mocks
     class ServerConnectionMock : Observable, IServerConnection
     {
         private bool _connected = false;
+        private bool _listen = false;
         bool IServerConnection.Connected => _connected;
+
+        public bool isListenServer => _listen;
 
         ConnectionResponse IServerConnection.Connect(ServerConnectionParameters parameters)
         {
@@ -54,10 +57,12 @@ namespace ClientTests.Mocks
 
         void IServerConnection.Listen()
         {
+            _listen = true;
         }
 
         void IServerConnection.StopListen()
         {
+            _listen = false;
         }
     }
 }

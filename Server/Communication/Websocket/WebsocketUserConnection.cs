@@ -20,7 +20,7 @@ namespace Server.Communication.Websocket
         private bool _active = false;
 
         User IUserConnection.User { get => _user; }
-        ProtocolConnection IUserConnection.Protocol { get => ProtocolConnection.TCP; }
+        ProtocolConnection IUserConnection.Protocol { get => ProtocolConnection.WebSocket; }
 
         public WebsocketUserConnection(
             ICommandInterpreter commandInterpreter,

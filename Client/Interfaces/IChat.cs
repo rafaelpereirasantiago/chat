@@ -7,6 +7,7 @@ namespace Client.Interfaces
     public interface IChat: IMessageSender, IRoomManager
     {
         bool Connected { get; }
+        bool isListenServer { get; }
         string SelectedRoom { get; }
         void Initialize();
         void ListenServer();

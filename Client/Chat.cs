@@ -17,6 +17,8 @@ namespace Client
 
         string IChat.SelectedRoom => selectedRoom;
 
+        bool IChat.isListenServer => _connection.isListenServer;
+
         public Chat(
             IServerConnection connection,
             ServerConnectionParameters connectionParameters

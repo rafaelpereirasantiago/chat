@@ -18,7 +18,7 @@ namespace Server.Communication.Http
         private bool _active = false;
 
         User IUserConnection.User { get => _user; }
-        ProtocolConnection IUserConnection.Protocol { get => ProtocolConnection.TCP; }
+        ProtocolConnection IUserConnection.Protocol { get => ProtocolConnection.HTTP; }
 
         public HttpUserConnection(
             ICommandInterpreter commandInterpreter,

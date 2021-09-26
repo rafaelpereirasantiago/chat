@@ -18,6 +18,9 @@ namespace Client.Communication.Http
         private bool _connected = false;
 
         bool IServerConnection.Connected => _connected;
+
+        bool IServerConnection.isListenServer => _listen;
+
         ConnectionResponse IServerConnection.Connect(ServerConnectionParameters parameters)
         {
             _serverUri = $"http://{parameters.IP}:{parameters.Port}/{parameters.ClientID}/";

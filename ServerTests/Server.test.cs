@@ -35,7 +35,7 @@ namespace ServerTests
             _tcpChat = CreateClient(Client.Communication.ProtocolConnection.TCP);
             _httpChat = CreateClient(Client.Communication.ProtocolConnection.HTTP);
             _websocketChat = CreateClient(Client.Communication.ProtocolConnection.WebSocket);
-            
+
             _server = CreateServer();
 
             _server.Initialize();
@@ -81,25 +81,80 @@ namespace ServerTests
                 NickName = "user3"
             };
 
+            var wrongUser = new Client.Models.User()
+            {
+                IP = "127.0.0.1",
+                CallbackPort = DEFAULT_CALLBACK_PORT_WEBSOCKET_CLIENT,
+                ClientID = Guid.NewGuid().ToString(),
+                NickName = "user1"
+            };
+
             var response1 = _tcpChat.RegisterUser(user1);
             var response2 = _httpChat.RegisterUser(user2);
-            var response3 = _tcpChat.RegisterUser(user3);
+            var response3 = _websocketChat.RegisterUser(wrongUser);
+
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response3.Type);
+            Assert.AreEqual("user-already-exists", response3.ResponseMessage);
+
+            var response4 = _websocketChat.RegisterUser(user3);
 
             Assert.AreEqual(TypeSendCommandResponse.Successful, response1.Type);
             Assert.AreEqual(TypeSendCommandResponse.Successful, response2.Type);
-            Assert.AreEqual(TypeSendCommandResponse.Successful, response3.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response4.Type);
 
-            Assert.AreEqual(true,_server.ConnectedUsers.Any(user => user.User.NickName == user1.NickName));
+            Assert.AreEqual(3, _server.ConnectedUsers.Count());
+            Assert.AreEqual(true, _server.ConnectedUsers.Any(user => user.User.NickName == user1.NickName));
             Assert.AreEqual(true, _server.ConnectedUsers.Any(user => user.User.NickName == user2.NickName));
             Assert.AreEqual(true, _server.ConnectedUsers.Any(user => user.User.NickName == user3.NickName));
         }
 
-        [Test,Order(3)]
+        [Test,Order(4)]
         public void ListenServer()
         {
             _tcpChat.ListenServer();
             _httpChat.ListenServer();
             _websocketChat.ListenServer();
+
+            Assert.AreEqual(true, _tcpChat.isListenServer);
+            Assert.AreEqual(true, _httpChat.isListenServer);
+            Assert.AreEqual(true, _websocketChat.isListenServer);
+        }
+
+        [Test, Order(5)]
+        public void SendPublicMessage()
+        {
+            var response1 = _tcpChat.SendPublicMessage("message user1");
+            var response2 = _httpChat.SendPublicMessage("message user3");
+            var response3 = _websocketChat.SendPublicMessage("message user3");
+
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response1.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response2.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response3.Type);
+        }
+
+        [Test, Order(6)]
+        public void SendPublicMessageForUser()
+        {
+            var response1 = _tcpChat.SendPublicMessageForUser("user2","message user1");
+            var response2 = _httpChat.SendPublicMessageForUser("user3","message user3");
+            var response3 = _websocketChat.SendPublicMessageForUser("user1","message user3");
+
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response1.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response2.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response3.Type);
+        }
+
+        [Test, Order(7)]
+        public void ExitChat()
+        {
+            var response1 = _tcpChat.Quit();
+            var response2 = _httpChat.Quit();
+            var response3 = _websocketChat.Quit();
+
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response1.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response2.Type);
+            Assert.AreEqual(TypeSendCommandResponse.Successful, response3.Type);
+            Assert.AreEqual(0, _server.ConnectedUsers.Count());
         }
 
 
@@ -130,7 +185,7 @@ namespace ServerTests
                 LocalIP = "127.0.0.1",
                 IP = "127.0.0.1",
                 Port = GetPortByProtocol(protocol),
-                CallbackPort = GetPortByProtocol(protocol)
+                CallbackPort = GetCallbackPortByProtocol(protocol)
             };
 
             var serverConnection = ServerConnectionFactory.Create(protocol);

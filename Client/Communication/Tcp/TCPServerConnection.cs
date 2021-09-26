@@ -16,6 +16,8 @@ namespace Client.Communication.Tcp
 
         bool IServerConnection.Connected => _tcpClient.Connected;
 
+        bool IServerConnection.isListenServer => _listen;
+
         ConnectionResponse IServerConnection.Connect(ServerConnectionParameters parameters)
         {
             IPAddress ipAddress = IPAddress.Parse(parameters.IP);

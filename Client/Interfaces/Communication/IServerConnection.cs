@@ -11,6 +11,7 @@ namespace Client.Interfaces.Communication
     public interface IServerConnection: IObservable<string>
     {
         bool Connected { get; }
+        bool isListenServer { get; }
         ConnectionResponse Connect(ServerConnectionParameters parameters);
         SendCommandResponse SendCommand(string command);
         SendCommandResponse SendCommandWithCallback(string command);
